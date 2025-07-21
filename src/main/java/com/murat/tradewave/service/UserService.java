@@ -1,11 +1,9 @@
 package com.murat.tradewave.service;
 
-import com.murat.tradewave.dto.request.UserLogRequest;
-import com.murat.tradewave.dto.request.UserRequest;
-import com.murat.tradewave.dto.response.UserResponse;
-import org.springframework.stereotype.Service;
+import com.murat.tradewave.dto.user.request.UserLogRequest;
+import com.murat.tradewave.dto.user.request.UserRequest;
+import com.murat.tradewave.dto.user.response.UserResponse;
 
-@Service
 
 public interface UserService {
 

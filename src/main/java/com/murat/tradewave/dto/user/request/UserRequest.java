@@ -1,11 +1,15 @@
-package com.murat.tradewave.dto.request;
+package com.murat.tradewave.dto.user.request;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 @Data
 @Getter @Setter
 public class UserRequest {
+@NotBlank(message = "Email must not be blank")
+@Email(message = "Invalid Email Format")
     private String email;
     private String password;
     private String name;

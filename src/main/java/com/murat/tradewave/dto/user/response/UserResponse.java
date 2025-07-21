@@ -1,10 +1,10 @@
-package com.murat.tradewave.dto.response;
+package com.murat.tradewave.dto.user.response;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-@Data
+
 @Getter@Setter
 @Builder
 public class UserResponse {

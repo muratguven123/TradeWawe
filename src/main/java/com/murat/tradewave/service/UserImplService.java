@@ -1,7 +1,8 @@
 package com.murat.tradewave.service;
 
-import com.murat.tradewave.dto.request.UserRequest;
-import com.murat.tradewave.dto.response.UserResponse;
+import com.murat.tradewave.dto.user.request.UserLogRequest;
+import com.murat.tradewave.dto.user.request.UserRequest;
+import com.murat.tradewave.dto.user.response.UserResponse;
 import com.murat.tradewave.entity.Role;
 import com.murat.tradewave.repository.UserRepository;
 import com.murat.tradewave.security.JwtService;
@@ -12,7 +13,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserImplService {
+public class UserImplService implements UserService {
+    @Override
+    public UserResponse login(UserLogRequest userLogRequest) {
+        return null;
+    }
+
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder= new BCryptPasswordEncoder();
