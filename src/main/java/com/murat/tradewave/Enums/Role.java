@@ -1,4 +1,4 @@
-package com.murat.tradewave.entity;
+package com.murat.tradewave.Enums;
 
 public enum Role {
     USER, ADMIN

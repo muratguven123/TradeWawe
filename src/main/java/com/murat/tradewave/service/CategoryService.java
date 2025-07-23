@@ -7,7 +7,7 @@ import com.murat.tradewave.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import com.murat.tradewave.helper.mapper;
+import com.murat.tradewave.helper.Mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final mapper mapper;
+    private final Mapper mapper;
 
     public Category getCategoryById(@PathVariable Long id) {
         return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));

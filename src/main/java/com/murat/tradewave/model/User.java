@@ -1,6 +1,6 @@
 package com.murat.tradewave.model;
 
-import com.murat.tradewave.entity.Role;
+import com.murat.tradewave.Enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 

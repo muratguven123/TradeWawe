@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @SpringBootApplication
 public class TradeWaveApplication {
 
-	@GetMapping("api/health")
 	public static void main(String[] args) {
 		SpringApplication.run(TradeWaveApplication.class, args);
 	}

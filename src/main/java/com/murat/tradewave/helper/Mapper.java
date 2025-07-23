@@ -7,7 +7,7 @@ import com.murat.tradewave.model.Product;
 import org.springframework.stereotype.Component;
 
 @Component
-public class mapper {
+public class Mapper {
     public ProductResponse mapToResponse(Product product) {
         return ProductResponse.builder()
                 .id(product.getId())

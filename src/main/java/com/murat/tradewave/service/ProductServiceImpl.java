@@ -1,7 +1,5 @@
 package com.murat.tradewave.service;
 
-import com.murat.tradewave.dto.category.request.CategoryRequest;
-import com.murat.tradewave.dto.category.response.CategoryResponse;
 import com.murat.tradewave.dto.product.request.ProductRequest;
 import com.murat.tradewave.dto.product.response.ProductResponse;
 import com.murat.tradewave.model.Category;
@@ -14,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import com.murat.tradewave.helper.mapper;
+import com.murat.tradewave.helper.Mapper;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +20,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductionService{
     private final ProductionRepository productionRepository;
-    private final mapper mapper;
+    private final Mapper mapper;
     private final CategoryRepository categoryRepository;
 
     @Override

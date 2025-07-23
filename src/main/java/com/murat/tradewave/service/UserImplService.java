@@ -3,7 +3,7 @@ package com.murat.tradewave.service;
 import com.murat.tradewave.dto.user.request.UserLogRequest;
 import com.murat.tradewave.dto.user.request.UserRequest;
 import com.murat.tradewave.dto.user.response.UserResponse;
-import com.murat.tradewave.entity.Role;
+import com.murat.tradewave.Enums.Role;
 import com.murat.tradewave.repository.UserRepository;
 import com.murat.tradewave.security.JwtService;
 import com.murat.tradewave.model.User;
