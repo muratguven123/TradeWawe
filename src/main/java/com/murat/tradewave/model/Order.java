@@ -32,4 +32,10 @@ public class Order {
     @ManyToOne
     private User user;
 
+    @ManyToOne
+    private Address deliveryAddress;
+
+    @Embedded
+    private EmbeddedAddress embeddedAddress;
+
 }

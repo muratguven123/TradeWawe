@@ -4,6 +4,9 @@ import com.murat.tradewave.Enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -64,5 +67,9 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Address> addresses = new ArrayList<>();
+
 
 }

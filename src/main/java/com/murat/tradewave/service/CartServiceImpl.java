@@ -98,17 +98,13 @@ public class CartServiceImpl implements CartService{
                 .totalAmount(totalAmount)
                 .createdAt(LocalDateTime.now())
                 .build();
-
-        // Her orderItem'a order set edelim
         order.getItems().forEach(item -> item.setOrder(order));
-
-        // Sepeti kapat
         cart.setCheckedout(true);
         cartRepository.save(cart);
 
         return order;
     }
     private BigDecimal fetchProductPrice(Long productId) {
-        return BigDecimal.valueOf(100);
+        return BigDecimal.valueOf(productId);
     }
 }
