@@ -24,6 +24,7 @@ public class ProductServiceImpl implements ProductionService{
     private final CategoryRepository categoryRepository;
 
     @Override
+
     public ProductResponse createProduct(ProductRequest productRequest) {
         Category category = categoryRepository.findById(productRequest.getCategoryId()).get();
         Product product = Product.builder()

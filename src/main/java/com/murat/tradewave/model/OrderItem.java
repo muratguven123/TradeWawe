@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Builder
 public class OrderItem {
     @Id

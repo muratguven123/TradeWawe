@@ -27,14 +27,18 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public void addToCart(AddToCartRequest addToCartRequest) {
-        Cart cart = cartRepository.findByUserIdAndCheckedOutFalse(addToCartRequest.getUserid()).orElseGet(()-> {
-            Cart newCart = Cart.builder()
-                    .userid(addToCartRequest.getUserid())
-                    .items(new ArrayList<>())
-                    .checkedout(false)
-                    .build();
-            return cartRepository.save(newCart);
-        });
+        Cart cart = cartRepository.findActiveCartByUserId(addToCartRequest.getUserid()).orElseGet(()->{
+
+                Cart newCart = Cart.builder()
+                        .userId(addToCartRequest.getUserid())
+                        .items(new ArrayList<>())
+                        .checkedout(false)
+                        .build();
+                return cartRepository.save(newCart);
+
+
+                }
+                );
         Optional<CartItem> optionalCartItem=cart.getItems().stream().filter(item->item.getProductId().equals(addToCartRequest.getProductid())).findFirst();
         if(optionalCartItem.isPresent()){
             CartItem existingCartItem=optionalCartItem.get();
@@ -54,7 +58,7 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public void removeFromCart(Long userid, Long productid) {
-        Cart cart = cartRepository.findByUserIdAndCheckedOutFalse(userid).orElseThrow(() -> new RuntimeException("Cart is not founded"));
+        Cart cart = cartRepository.findActiveCartByUserId(userid).orElseThrow(()->new RuntimeException("Cart is not found"));
 
         CartItem itemRemove = cart.getItems().stream().filter(item->item.getProductId().equals(productid)).findFirst().orElse(null);
 
@@ -66,7 +70,7 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional()
     public Cart viewCart(Long userid) {
-        return cartRepository.findByUserIdAndCheckedOutFalse(userid)
+        return cartRepository.findActiveCartByUserId(userid)
                 .orElseThrow(() -> new RuntimeException("Cart is not founded"));
 
     }
@@ -74,7 +78,7 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public Order checkoutCart(Long userid) {
-        Cart cart=cartRepository.findByUserIdAndCheckedOutFalse(userid).orElseThrow(() -> new RuntimeException("Cart is not founded"));
+        Cart cart=cartRepository.findActiveCartByUserId(userid).orElseThrow(() -> new RuntimeException("Cart is not founded"));
 
         if(cart.getItems().isEmpty()){
             throw new RuntimeException("Cart is empty");

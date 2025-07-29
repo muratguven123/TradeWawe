@@ -1,16 +1,14 @@
 package com.murat.tradewave.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "Cart")
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Builder
@@ -19,7 +17,9 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private long userid;
+    @Column(name = "user_id")
+    private Long userId;
+
     @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;
 

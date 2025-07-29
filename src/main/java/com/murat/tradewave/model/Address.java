@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "address")
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Builder
 @Getter
 @Setter

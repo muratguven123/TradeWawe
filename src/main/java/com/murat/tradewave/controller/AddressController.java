@@ -15,7 +15,7 @@ import java.util.Optional;
 public class AddressController {
     private final AddresServiceImpl addresServiceImpl;
 
-    @GetMapping("{/id}")
+    @GetMapping("/{id}")
     public Optional<Address> findById(@PathVariable Long id) {
         return addresServiceImpl.getAddressByid(id);
     }

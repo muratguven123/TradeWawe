@@ -7,6 +7,7 @@ import com.murat.tradewave.repository.UserRepository;
 import com.murat.tradewave.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ private final UserService userService;
        return userService.registerUser(userRequest);
 }
 @PostMapping("/login")
-    public UserResponse login(@RequestBody @Valid UserLogRequest userLogRequest) {
+    public User login(@RequestBody @Valid UserLogRequest userLogRequest) {
         return userService.login(userLogRequest);
 }
 

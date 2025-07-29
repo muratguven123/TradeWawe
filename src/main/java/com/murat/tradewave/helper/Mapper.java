@@ -3,10 +3,8 @@ package com.murat.tradewave.helper;
 import com.murat.tradewave.dto.Address.response.AdressResponse;
 import com.murat.tradewave.dto.category.response.CategoryResponse;
 import com.murat.tradewave.dto.product.response.ProductResponse;
-import com.murat.tradewave.model.Address;
-import com.murat.tradewave.model.Category;
-import com.murat.tradewave.model.EmbeddedAddress;
-import com.murat.tradewave.model.Product;
+import com.murat.tradewave.dto.user.response.UserResponse;
+import com.murat.tradewave.model.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -48,5 +46,13 @@ public class Mapper {
                 .country(address.getCountry())
                 .build();
     }
+public UserResponse mapToUserResponse(User user){
+        return UserResponse.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .id(user.getId())
+                .password(user.getPassword())
+                .build();
+}
 
 }
