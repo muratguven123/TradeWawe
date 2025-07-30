@@ -36,9 +36,6 @@ public class UserImplService implements UserService {
 
 
     public UserResponse registerUser(UserRequest request){
-        if (!(userRepository.existsByEmail(request.getEmail()))){
-            throw new RuntimeException("Email address does not exist");
-        }
         User user = User.builder()
                 .email(request.getEmail())
                 .password(bCryptPasswordEncoder.encode(request.getPassword()))

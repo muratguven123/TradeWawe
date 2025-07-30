@@ -3,7 +3,6 @@ package com.murat.tradewave.controller;
 import com.murat.tradewave.dto.user.request.UserLogRequest;
 import com.murat.tradewave.dto.user.request.UserRequest;
 import com.murat.tradewave.dto.user.response.UserResponse;
-import com.murat.tradewave.repository.UserRepository;
 import com.murat.tradewave.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 
 public class UserController {
-private final UserRepository userRepository;
-private UserResponse userResponse;
+
 private final UserService userService;
 
 @PostMapping("/register")
@@ -30,14 +28,5 @@ private final UserService userService;
     public User login(@RequestBody @Valid UserLogRequest userLogRequest) {
         return userService.login(userLogRequest);
 }
-
-
-
-
-
-
-
-
-
 
 }
