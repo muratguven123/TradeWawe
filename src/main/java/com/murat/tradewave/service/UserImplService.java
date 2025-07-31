@@ -36,6 +36,9 @@ public class UserImplService implements UserService {
 
 
     public UserResponse registerUser(UserRequest request){
+        if(userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new RuntimeException("User already exists");
+        }
         User user = User.builder()
                 .email(request.getEmail())
                 .password(bCryptPasswordEncoder.encode(request.getPassword()))
