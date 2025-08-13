@@ -46,7 +46,7 @@ public class UserImplService implements UserService {
                 .role(Role.USER)
                 .build();
         userRepository.save(user);
-        String token = jwtService.generateJwtToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail());
         return UserResponse.builder()
                 .id(user.getId())
                 .name(user.getName())

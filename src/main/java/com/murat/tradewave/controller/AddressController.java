@@ -15,23 +15,25 @@ import java.util.Optional;
 public class AddressController {
     private final AddresServiceImpl addresServiceImpl;
 
-    @GetMapping("/{id}")
-    public Optional<Address> findById(@PathVariable Long id) {
-        return addresServiceImpl.getAddressByid(id);
-    }
     @GetMapping
     public List<Address> findAll() {
         return addresServiceImpl.getAllAdress();
     }
-    @PostMapping
+    @GetMapping("/{id}")
+    public Optional<Address> findById(@PathVariable Long id) {
+        return addresServiceImpl.getAddressByid(id);
+    }
+
+
+    @PostMapping("/save")
     public void save(@RequestBody AddressRequest address) {
         addresServiceImpl.addToAddress(address);
     }
-    @PutMapping
+    @PutMapping("/update")
     public void update(@RequestBody AddressRequest address) {
         addresServiceImpl.addToAddress(address);
     }
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public void delete(@RequestBody AddressRequest address) {
         addresServiceImpl.removeFromAddress(address);
     }

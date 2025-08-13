@@ -18,7 +18,7 @@ public class PaymentController {
 private final PaymentService paymentService;
 
 
-    @GetMapping("/payment/history")
+    @GetMapping("/history")
     public ResponseEntity<List<PaymentResponse>> getPaymentHistory(Authentication authentication) {
         String email = authentication.getName();
         List<PaymentResponse> history = paymentService.paymentGetHistory(email);
@@ -26,7 +26,7 @@ private final PaymentService paymentService;
     }
 
 
-    @PostMapping("/payment/send")
+    @PostMapping("send")
     public ResponseEntity<PaymentResponse> initialpayment(@RequestBody PaymentRequest request){
     PaymentResponse response=paymentService.initailPayment(request);
     return ResponseEntity.ok(response);

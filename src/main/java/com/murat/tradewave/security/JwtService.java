@@ -1,67 +1,76 @@
 package com.murat.tradewave.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.murat.tradewave.Enums.Role;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.security.Key;
+import java.util.*;
 import java.util.function.Function;
 import io.jsonwebtoken.Jwts;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
-    private final String SECRET = "JWTSuperSecureKey_ChangeThisToSomethingLong_123456!";
-    private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
-    private final long EXPIRATION_TIME = 86400000L; // 1 gün
+    @Value("${jwt.secret}")
+    private String secretKey;
 
-    public String generateJwtToken(String email) {
-        return createToken(new HashMap<>(), email);
-    }
+    @Value("${jwt.expiration}")
+    private long jwtExpiration; //
 
-    private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
-                .compact();
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public boolean isTokenValid(String token, String userEmail) {
-        final String username = extractUsername(token);
-        return (username.equals(userEmail) && !isTokenExpired(token));
+    public <T> T extractClaim(String token, Function<Claims, T> resolver) {
+        final Claims claims = extractAllClaims(token);
+        return resolver.apply(claims);
+    }
+
+    public Claims extractAllClaims(String token) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw new RuntimeException("JWT expired", e);
+        } catch (JwtException e) {
+            throw new RuntimeException("Invalid JWT", e);
+        }
+    }
+
+    public String generateToken(String username) {
+        Role role = Role.USER;
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", List.of(role.name()));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public boolean isTokenValid(String token, String username) {
+        final String extractedUsername = extractUsername(token);
+        return extractedUsername.equals(username) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        final Date expiration = extractClaim(token, Claims::getExpiration);
+        return expiration.before(new Date());
     }
 }

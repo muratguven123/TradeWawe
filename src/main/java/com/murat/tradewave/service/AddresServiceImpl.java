@@ -23,14 +23,12 @@ public class AddresServiceImpl implements AddresService {
     @Transactional
     public void addToAddress(AddressRequest addressRequest) {
         Address address = Address.builder()
-                .name(addressRequest.getAddresName())
-                .title(addressRequest.getTittle())
+                .name(addressRequest.getName())
+                .title(addressRequest.getTitle())
                 .country(addressRequest.getCountry())
                 .city(addressRequest.getCity())
                 .street(addressRequest.getStreet())
-                .discrict(addressRequest.getDiscrict())
-                .id(addressRequest.getId())
-                .createdAt(addressRequest.getCreatedAt())
+                .discrict(addressRequest.getDistrict())
                 .postalCode(addressRequest.getPostalCode())
                 .build();
         addressRepository.save(address);
@@ -39,8 +37,8 @@ public class AddresServiceImpl implements AddresService {
     @Override
     @Transactional
     public void removeFromAddress(AddressRequest addressRequest) {
-//Burada yapılması gereken ek bir iş var onu bir sonraki sprinte devredeceğim şimdilik içerideki id ile dönsün mantık olarak yanlış olan yerin farkındayım
-        Address address = addressRepository.findById(Math.toIntExact(addressRequest.getId())).stream().findFirst().orElseThrow(()->new RuntimeException("Address Not Exist"));
+//Burada yapılması gereken ek bir iş var onu bir sonraki sprinte devredeceğim şimdilik içerideki name ile dönsün
+        Address address = (Address) addressRepository.findAllByUserAdressName(addressRequest.getName()).stream().toList();
         addressRepository.delete(address);
     }
     @Override

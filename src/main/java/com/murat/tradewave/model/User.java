@@ -3,16 +3,16 @@ package com.murat.tradewave.model;
 import com.murat.tradewave.Enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-
+import com.murat.tradewave.model.Address;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class User {
     @Setter

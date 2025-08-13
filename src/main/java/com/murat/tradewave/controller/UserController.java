@@ -3,6 +3,7 @@ package com.murat.tradewave.controller;
 import com.murat.tradewave.dto.user.request.UserLogRequest;
 import com.murat.tradewave.dto.user.request.UserRequest;
 import com.murat.tradewave.dto.user.response.UserResponse;
+import com.murat.tradewave.service.UserImplService;
 import com.murat.tradewave.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class UserController {
 
-private final UserService userService;
+private final UserImplService userService;
 
 @PostMapping("/register")
     public UserResponse register(@RequestBody @Valid UserRequest userRequest) {
