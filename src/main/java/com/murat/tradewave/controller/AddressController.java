@@ -4,10 +4,10 @@ import com.murat.tradewave.dto.Address.request.AddressRequest;
 import com.murat.tradewave.model.Address;
 import com.murat.tradewave.service.AddresServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/address")
@@ -19,12 +19,12 @@ public class AddressController {
     public List<Address> findAll() {
         return addresServiceImpl.getAllAdress();
     }
-    @GetMapping("/{id}")
-    public Optional<Address> findById(@PathVariable Long id) {
-        return addresServiceImpl.getAddressByid(id);
+    @GetMapping("/address/{id}")
+    public ResponseEntity<Address> findById(@PathVariable Long id) {
+        return addresServiceImpl.getAddressByid(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
-
-
     @PostMapping("/save")
     public void save(@RequestBody AddressRequest address) {
         addresServiceImpl.addToAddress(address);

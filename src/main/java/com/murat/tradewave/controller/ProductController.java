@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("products")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -42,8 +42,5 @@ public class ProductController {
         public void deleteProduct(@PathVariable @Valid Long id) {
         productService.deleteProduct(id);
         }
-
-
-
 
 }
