@@ -1,6 +1,7 @@
 package com.murat.tradewave.service;
 
 import com.murat.tradewave.dto.Cart.AddToCartRequest;
+import com.murat.tradewave.dto.Cart.RemoveCartRequest;
 import com.murat.tradewave.model.Cart;
 import com.murat.tradewave.model.CartItem;
 import com.murat.tradewave.model.Order;
@@ -22,12 +23,10 @@ import java.util.Optional;
 public class CartServiceImpl implements CartService{
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-
-
     @Override
     @Transactional
     public void addToCart(AddToCartRequest addToCartRequest) {
-        Cart cart = cartRepository.findActiveCartByUserId(addToCartRequest.getUserid()).orElseGet(()->{
+        Cart cart = cartRepository.findCartByid(addToCartRequest.getUserid()).orElseGet(()->{
 
                 Cart newCart = Cart.builder()
                         .userId(addToCartRequest.getUserid())
@@ -54,13 +53,12 @@ public class CartServiceImpl implements CartService{
         }
         cartRepository.save(cart);
     }
-
     @Override
     @Transactional
-    public void removeFromCart(Long userid, Long productid) {
-        Cart cart = cartRepository.findActiveCartByUserId(userid).orElseThrow(()->new RuntimeException("Cart is not found"));
+    public void removeFromCart(RemoveCartRequest removeCartRequest) {
+        Cart cart = cartRepository.findCartByid(removeCartRequest.getUserid()).orElseThrow(()->new RuntimeException("Cart is not found"));
 
-        CartItem itemRemove = cart.getItems().stream().filter(item->item.getProductId().equals(productid)).findFirst().orElse(null);
+        CartItem itemRemove = cart.getItems().stream().filter(item->item.getProductId().equals(removeCartRequest.getProductid())).findFirst().orElse(null);
 
         cart.getItems().remove(itemRemove);
         cartItemRepository.delete(itemRemove);
@@ -70,15 +68,15 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional()
     public Cart viewCart(Long userid) {
-        return cartRepository.findActiveCartByUserId(userid)
+        return cartRepository.findCartByid(userid)
                 .orElseThrow(() -> new RuntimeException("Cart is not founded"));
 
     }
 
     @Override
     @Transactional
-    public Order checkoutCart(Long userid) {
-        Cart cart=cartRepository.findActiveCartByUserId(userid).orElseThrow(() -> new RuntimeException("Cart is not founded"));
+    public Order checkoutCart(Long orderid) {
+        Cart cart=cartRepository.findCartByid(orderid).orElseThrow(() -> new RuntimeException("Cart is not founded"));
 
         if(cart.getItems().isEmpty()){
             throw new RuntimeException("Cart is empty");
@@ -97,7 +95,7 @@ public class CartServiceImpl implements CartService{
 
 
         Order order = Order.builder()
-                .id(userid)
+                .id(orderid)
                 .items(orderItems)
                 .totalAmount(totalAmount)
                 .createdAt(LocalDateTime.now())

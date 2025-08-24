@@ -31,26 +31,25 @@ public class OrderService {
     private final UserRepository userRepository;
 
 
-    public OrderResponse createOrder(OrderRequest orderRequest, String email) {
+    public OrderRequest createOrder(OrderItemRequest orderRequest, String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         List<OrderItem> orderItems = new ArrayList<>();
 
         BigDecimal totalPrice = BigDecimal.ZERO;
 
-        for (OrderItemRequest itemRequest : orderRequest.getItems()) {
-            Product product = productionRepository.findById(itemRequest.getProductıd()).orElseThrow(() -> new RuntimeException("Product not found"));
 
-            BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
+            Product product = productionRepository.findById(orderRequest.getProductıd()).orElseThrow(() -> new RuntimeException("Product not found"));
+
+            BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(orderRequest.getQuantity()));
             totalPrice = totalPrice.add(itemTotal);
 
             OrderItem orderItem = OrderItem.builder()
                     .product(product)
-                    .quantity(itemRequest.getQuantity())
+                    .quantity(orderRequest.getQuantity())
                     .price(product.getPrice())
                     .build();
 
             orderItems.add(orderItem);
-        }
 
         Order order = Order.builder()
                 .user(user)
@@ -65,7 +64,6 @@ public class OrderService {
         }
         order.setItems(orderItems);
         Order savedOrder = orderRepository.save(order);
-
         List<OrderItemResponse> itemResponses = new ArrayList<>();
         for (OrderItem item : savedOrder.getItems()) {
             itemResponses.add(OrderItemResponse.builder()
@@ -76,15 +74,14 @@ public class OrderService {
                     .build());
         }
 
-        return OrderResponse.builder()
-                .orderId(savedOrder.getId())
-                .items(itemResponses)
-                .totalAmount(savedOrder.getTotalAmount())
-                .status(savedOrder.getStatus().name())
-                .createdAt(savedOrder.getCreatedAt())
+
+        return OrderRequest.builder()
+                .orderId(order.getId())
+                .status(order.getStatus())
+                .totalAmount(order.getTotalAmount())
+                .items(order.getItems())
+                .createdAt(order.getCreatedAt())
                 .build();
-
-
     }
 
     public OrderResponse getOrderDetail(Long orderId, String email) throws AccessDeniedException {

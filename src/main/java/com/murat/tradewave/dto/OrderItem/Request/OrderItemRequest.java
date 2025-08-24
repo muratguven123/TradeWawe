@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class OrderItemRequest {
 private Long productıd;
-
+private String name;
 private Integer quantity;
 
 

@@ -22,7 +22,7 @@ public class PaymentService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public PaymentResponse initailPayment(PaymentRequest paymentRequest) {
+    public PaymentResponse initailPayment(PaymentRequest paymentRequest, String email) {
         Order order = orderRepository.findById(paymentRequest.getOrderId()).orElseThrow(()->new RuntimeException("Order not found"));
         if (order.getStatus()== OrderStatus.Created){
             throw new RuntimeException("Order already exists");

@@ -19,8 +19,8 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final Mapper mapper;
 
-    public Category getCategoryById(@PathVariable Long id) {
-        return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+    public List<CategoryRequest> getCategoryById(@PathVariable Long id) {
+        return (List<CategoryRequest>) categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
     public List<CategoryResponse> getAllCategories() {
@@ -46,9 +46,9 @@ public class CategoryService {
 
     }
 
-    public CategoryResponse updateCategory(Long id, CategoryRequest request) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+    public CategoryResponse updateCategory(CategoryRequest request) {
+        Category category = categoryRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("Category not found with id: " + request.getId()));
 
         category.setName(request.getName());
 

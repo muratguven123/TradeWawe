@@ -34,8 +34,8 @@ private final PaymentService paymentService;
             @Valid @RequestBody PaymentRequest request,
             Authentication authentication
     ) {
-        String email = authentication.getName(); // gerekiyorsa servise gönder
-        PaymentResponse resp = paymentService.initailPayment(request /*, email */);
+        String email = authentication.getName();
+        PaymentResponse resp = paymentService.initailPayment(request , email );
         return ResponseEntity.ok(resp);
     }
 
