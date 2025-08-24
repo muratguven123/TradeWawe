@@ -35,7 +35,7 @@ private final PaymentService paymentService;
             Authentication authentication
     ) {
         String email = authentication.getName();
-        PaymentResponse resp = paymentService.initailPayment(request , email );
+        PaymentResponse resp = paymentService.initailPayment(request);
         return ResponseEntity.ok(resp);
     }
 
