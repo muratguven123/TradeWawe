@@ -65,6 +65,7 @@ public class UserImplService implements UserService {
     public UserResponse changeRole(Long id,Role newRole){
         User changedRole = userRepository.findById(id).orElseThrow(()->new RuntimeException("user not found"));
         changedRole.setRole(newRole);
+        userRepository.save(changedRole);
         return mapper.mapToUserResponse(changedRole);
     }
 
