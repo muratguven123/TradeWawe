@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.nio.file.Paths.get;
 
 @Component
 @RequiredArgsConstructor
@@ -98,8 +97,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         List<SimpleGrantedAuthority> authorities;
         try {
-            ;
-            authorities = mapRolesToAuthorities(get("roles"));
+            authorities = mapRolesToAuthorities(jwtService.extractRoles(token));
         } catch (ExpiredJwtException ex) {
             writeJsonError(response, HttpServletResponse.SC_UNAUTHORIZED, "TOKEN_EXPIRED", "JWT expired");
             SecurityContextHolder.clearContext();
