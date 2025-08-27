@@ -52,7 +52,6 @@ public UserResponse mapToUserResponse(User user){
                 .email(user.getEmail())
                 .name(user.getName())
                 .id(user.getId())
-                .password(user.getPassword())
                 .build();
 }
 public SellerRequest mapToSellerResponse(Seller seller){
