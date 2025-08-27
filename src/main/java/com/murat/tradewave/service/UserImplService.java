@@ -10,7 +10,7 @@ import com.murat.tradewave.security.JwtService;
 import com.murat.tradewave.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,21 +19,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserImplService implements UserService {
     private final Mapper mapper;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public org.springframework.security.core.userdetails.User login(UserLogRequest UserLogRequest) {
-        User user = userRepository.findByEmail(UserLogRequest.getEmail()).orElseThrow(()->new RuntimeException("User does not exist"));
+    public org.springframework.security.core.userdetails.User login(UserLogRequest userLogRequest) {
+        User user = userRepository.findByEmail(userLogRequest.getEmail()).orElseThrow(() -> new RuntimeException("User does not exist"));
+        String requestedPassword = userLogRequest.getPassword();
+        if (!passwordEncoder.matches(requestedPassword, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
         return new org.springframework.security.core.userdetails.User(
-                UserLogRequest.getEmail(),
-                UserLogRequest.getPassword(),
+                userLogRequest.getEmail(),
+                user.getPassword(),
                 List.of(new SimpleGrantedAuthority(user.getRole().toString()))
         );
     }
-
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder= new BCryptPasswordEncoder();
-
 
     public UserResponse registerUser(UserRequest request){
         if(userRepository.findByEmail(request.getEmail()).isPresent()){
@@ -41,7 +43,7 @@ public class UserImplService implements UserService {
         }
         User user = User.builder()
                 .email(request.getEmail())
-                .password(bCryptPasswordEncoder.encode(request.getPassword()))
+                .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .role(Role.USER)
                 .build();
