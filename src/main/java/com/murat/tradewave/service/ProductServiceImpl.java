@@ -53,6 +53,7 @@ public class ProductServiceImpl implements ProductionService{
         return mapper.mapToResponse(product);
     }
 
+    @Override
     public ProductResponse updateProduct(Long id, ProductRequest productRequest){
         Product product=productionRepository.findById(id).orElseThrow(()-> new RuntimeException("Product not found, Please be sure search true product in our system"));
         product.setName(productRequest.getName());
@@ -62,6 +63,7 @@ public class ProductServiceImpl implements ProductionService{
         productionRepository.save(product);
         return mapper.mapToResponse(product);
     }
+    @Override
     public void deleteProduct(Long id){
         Product deletedProduct=productionRepository.findById(id).orElseThrow(()-> new RuntimeException("Product not found,Please be sure search true product in our system"));
         productionRepository.delete(deletedProduct);
