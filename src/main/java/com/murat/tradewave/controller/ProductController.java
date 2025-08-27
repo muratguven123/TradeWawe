@@ -2,10 +2,10 @@ package com.murat.tradewave.controller;
 
 import com.murat.tradewave.dto.product.request.ProductRequest;
 import com.murat.tradewave.dto.product.response.ProductResponse;
-import com.murat.tradewave.service.ProductServiceImpl;
 import com.murat.tradewave.service.ProductionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
 
+    @Qualifier("productServiceImpl")
     private final ProductionService productionService;
-    private final ProductServiceImpl productService;
     @PostMapping("/create")
     public ProductResponse createProduct(@RequestBody ProductRequest productRequest) {
         return productionService.createProduct(productRequest);
@@ -36,11 +36,11 @@ public class ProductController {
         }
         @PutMapping("/update")
         public ProductResponse updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequest productRequest) {
-        return productService.updateProduct(id, productRequest);
+        return productionService.updateProduct(id, productRequest);
         }
         @DeleteMapping("/delete")
         public void deleteProduct(@PathVariable @Valid Long id) {
-        productService.deleteProduct(id);
+        productionService.deleteProduct(id);
         }
 
 }

@@ -8,4 +8,6 @@ public interface ProductionService {
     ProductResponse createProduct(ProductRequest productRequest);
     Page<ProductResponse> getAlProducts(int page,int size,String sortBy,String direction);
     ProductResponse getProduct(Long productId);
+    ProductResponse updateProduct(Long id, ProductRequest productRequest);
+    void deleteProduct(Long id);
 }
