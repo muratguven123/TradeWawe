@@ -10,8 +10,4 @@ TradeWave, Spring Boot kullanarak mikroservise evrilebilir katmanlı mimari ile 
 - Gerçekçi e-ticaret backend akışını kurmak
 - Mikroservis mimarisine evrilmek
 
-## 🚀 Sprint 0: Hedefler
-- Proje kurulumu ve package yapısı oluşturmak
-- GitHub repo hazırlamak
-- Sağlık kontrol endpoint’i eklemek
-- Lombok ve bağımlılıkları kontrol etmek
+Kodlar Master Branchte toplandı
