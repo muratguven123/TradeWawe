@@ -1,10 +1,11 @@
 package com.murat.tradewave.dto.category.request;
-
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 
 public class CategoryRequest {
     private String name;

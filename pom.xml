@@ -10,18 +10,15 @@
                 <version>3.3.5</version>
 		<relativePath/>
 	</parent>
-
 	<groupId>com.murat</groupId>
 	<artifactId>tradewave</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>TradeWave</name>
-	<description>Demo project for Spring Boot</description>
-
+	<description>niyet ettim microservislere başlamaya ama önce monolitik yazalım</description>
         <properties>
                 <java.version>21</java.version>
                 <lombok.version>1.18.32</lombok.version>
         </properties>
-
         <dependencyManagement>
                 <dependencies>
                         <dependency>
@@ -35,7 +32,6 @@
         </dependencyManagement>
 
         <dependencies>
-		<!-- Spring Starters -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -48,8 +44,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
-                <!-- JWT -->
                 <dependency>
                         <groupId>io.jsonwebtoken</groupId>
                         <artifactId>jjwt-api</artifactId>
@@ -64,23 +58,17 @@
                         <artifactId>jjwt-jackson</artifactId>
                         <scope>runtime</scope>
                 </dependency>
-
-		<!-- Lombok -->
-		<dependency>
+			<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- Database -->
-		<dependency>
+			<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
-                <!-- Devtools -->
                 <dependency>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-devtools</artifactId>
@@ -110,10 +98,8 @@
                 </dependency>
 
 	</dependencies>
-
 	<build>
 		<plugins>
-			<!-- Compiler Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -129,8 +115,6 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-
-			<!-- Spring Boot Plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

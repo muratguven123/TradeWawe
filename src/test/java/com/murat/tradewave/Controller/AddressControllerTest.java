@@ -69,17 +69,6 @@ class AddressControllerTest {
                 .andExpect(jsonPath("$[1].id", Matchers.is(2)));
     }
 
-
-//    @Test
-//    @DisplayName("GET /address/{id} -> returns empty when not present")
-//    void findById_returnsEmpty() throws Exception {
-//        given(addresServiceImpl.getAddressByid(999L))
-//                .willReturn(Optional.empty());
-//
-//        mockMvc.perform(get("/address/{id}", 999L))
-//                .andExpect(status().isNoContent());
-//    }
-
     @Test
     @DisplayName("POST /address/save -> calls service with body")
     void save_callsService() throws Exception {

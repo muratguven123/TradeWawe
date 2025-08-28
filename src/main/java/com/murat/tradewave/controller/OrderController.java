@@ -3,7 +3,6 @@ package com.murat.tradewave.controller;
 import com.murat.tradewave.dto.Order.request.OrderRequest;
 import com.murat.tradewave.dto.Order.response.OrderResponse;
 import com.murat.tradewave.dto.OrderItem.Request.OrderItemRequest;
-import com.murat.tradewave.model.Order;
 import com.murat.tradewave.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
@@ -26,7 +25,7 @@ public class OrderController {
         OrderResponse response = orderService.getOrderDetail(id, email);
         return ResponseEntity.ok(response);
     }
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<OrderRequest> createOrder(@RequestBody OrderItemRequest request,
                                                      @AuthenticationPrincipal(expression = "username") String email) {
         OrderRequest orderRequest = orderService.createOrder(request, email);
