@@ -116,6 +116,16 @@ class AdminControllerTest {
     }
 
     @Test
+    @DisplayName("DELETE /admin/users/{id} - USER -> 403")
+    @WithMockUser(roles = "USER")
+    void deleteUser_asNonAdmin_forbidden() throws Exception {
+        mockMvc.perform(delete("/admin/users/{id}", 99L))
+                .andExpect(status().isForbidden());
+
+        Mockito.verifyNoInteractions(userService, productService);
+    }
+
+    @Test
     @DisplayName("PUT /admin/users/{id}/role - ADMIN -> 200")
     @WithMockUser(roles = "ADMIN")
     void changeUserRole_asAdmin_ok() throws Exception {
@@ -131,6 +141,17 @@ class AdminControllerTest {
     }
 
     @Test
+    @DisplayName("PUT /admin/users/{id}/role - USER -> 403")
+    @WithMockUser(roles = "USER")
+    void changeUserRole_asNonAdmin_forbidden() throws Exception {
+        mockMvc.perform(put("/admin/users/{id}/role", 1L)
+                        .param("newRole", Role.ADMIN.name()))
+                .andExpect(status().isForbidden());
+
+        Mockito.verifyNoInteractions(userService, productService);
+    }
+
+    @Test
     @DisplayName("DELETE /admin/products/{id} - ADMIN -> 200")
     @WithMockUser(roles = "ADMIN")
     void deleteAnyProduct_asAdmin_ok() throws Exception {
@@ -141,5 +162,15 @@ class AdminControllerTest {
                 .andExpect(status().isOk());
 
         verify(productService).deleteProduct(id);
+    }
+
+    @Test
+    @DisplayName("DELETE /admin/products/{id} - USER -> 403")
+    @WithMockUser(roles = "USER")
+    void deleteAnyProduct_asNonAdmin_forbidden() throws Exception {
+        mockMvc.perform(delete("/admin/products/{id}", 11L))
+                .andExpect(status().isForbidden());
+
+        Mockito.verifyNoInteractions(userService, productService);
     }
 }
