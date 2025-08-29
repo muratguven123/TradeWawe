@@ -1,14 +1,9 @@
 package com.murat.tradewave.service;
-
-import com.murat.tradewave.Enums.OrderStatus;
 import com.murat.tradewave.dto.Seller.SellerLoginRequest;
 import com.murat.tradewave.dto.Seller.SellerRegisterRequest;
-import com.murat.tradewave.dto.Seller.SellerRequest;
 import com.murat.tradewave.dto.Seller.SellerResponse;
-import com.murat.tradewave.helper.Mapper;
 import com.murat.tradewave.model.Seller;
 import com.murat.tradewave.repository.SellerRepository;
-import com.murat.tradewave.security.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -22,11 +17,8 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-
 public class SellerServiceImpl implements SellerService {
-    private Mapper mapper;
     private final SellerRepository sellerRepository;
-    private final JwtService jwtService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     @Transactional
     public SellerResponse register(@Valid SellerRegisterRequest request) {

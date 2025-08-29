@@ -1,5 +1,5 @@
 package com.murat.tradewave.Enums;
 
 public enum Role {
-    USER, ADMIN,COMPANY,INDİVİDUAL
+    USER, ADMIN,COMPANY,INDİVİDUAL,SELLER
 }

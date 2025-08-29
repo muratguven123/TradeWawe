@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = AdminController.class)
-// DİKKAT: @AutoConfigureMockMvc(addFilters = false) YOK!
 @Import(AdminControllerTest.SecurityTestConfig.class)
 class AdminControllerTest {
 
@@ -41,22 +40,18 @@ class AdminControllerTest {
 
     @MockBean UserImplService userService;
     @MockBean ProductServiceImpl productService;
-
-    // Uygulamadaki gerçek bean’ı yerine sahte filtre; zincire eklemeyeceğiz
     @MockBean JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired ObjectMapper objectMapper;
 
     @TestConfiguration
-    @EnableMethodSecurity // @PreAuthorize'ları aktif et
+    @EnableMethodSecurity
     static class SecurityTestConfig {
         @Bean
         SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             http.csrf(csrf -> csrf.disable());
-            // Her istek kimlik doğrulanmış olsun; 403'ü method security verecek
             http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
             http.httpBasic(withDefaults());
-            // ÖNEMLİ: jwtAuthenticationFilter'ı BURAYA EKLEME!
             return http.build();
         }
 
