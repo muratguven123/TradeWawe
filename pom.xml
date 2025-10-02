@@ -16,20 +16,10 @@
 	<name>TradeWave</name>
 	<description>niyet ettim microservislere başlamaya ama önce monolitik yazalım</description>
         <properties>
-                <java.version>21</java.version>
+                <java.version>17</java.version>
                 <lombok.version>1.18.32</lombok.version>
+                <jwt.version>0.11.5</jwt.version>
         </properties>
-        <dependencyManagement>
-                <dependencies>
-                        <dependency>
-                                <groupId>io.jsonwebtoken</groupId>
-                                <artifactId>jjwt-bom</artifactId>
-                                <version>0.12.6</version>
-                                <type>pom</type>
-                                <scope>import</scope>
-                        </dependency>
-                </dependencies>
-        </dependencyManagement>
 
         <dependencies>
 		<dependency>
@@ -47,15 +37,18 @@
                 <dependency>
                         <groupId>io.jsonwebtoken</groupId>
                         <artifactId>jjwt-api</artifactId>
+                        <version>${jwt.version}</version>
                 </dependency>
                 <dependency>
                         <groupId>io.jsonwebtoken</groupId>
                         <artifactId>jjwt-impl</artifactId>
+                        <version>${jwt.version}</version>
                         <scope>runtime</scope>
                 </dependency>
                 <dependency>
                         <groupId>io.jsonwebtoken</groupId>
                         <artifactId>jjwt-jackson</artifactId>
+                        <version>${jwt.version}</version>
                         <scope>runtime</scope>
                 </dependency>
 			<dependency>
@@ -83,6 +76,13 @@
                 <dependency>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-starter-mail</artifactId>
+                </dependency>
+
+                <!-- Swagger UI -->
+                <dependency>
+                        <groupId>org.springdoc</groupId>
+                        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                        <version>2.2.0</version>
                 </dependency>
 
                 <!-- Test -->

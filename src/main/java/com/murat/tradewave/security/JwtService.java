@@ -34,13 +34,12 @@ public class JwtService {
 
     private JwtParser buildParser() {
         return Jwts.parser()
-                .verifyWith((SecretKey) getSigningKey())
-                .clockSkewSeconds(clockSkewSeconds)
-                .build();
+                .setSigningKey(getSigningKey())
+                .setAllowedClockSkewSeconds(clockSkewSeconds);
     }
 
     public Claims extractAllClaims(String token) throws ExpiredJwtException, JwtException {
-        return buildParser().parseSignedClaims(token).getPayload();
+        return buildParser().parseClaimsJws(token).getBody();
     }
 
     public String extractUsername(String token) {

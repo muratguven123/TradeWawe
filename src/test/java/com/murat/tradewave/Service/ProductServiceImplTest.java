@@ -2,6 +2,7 @@ package com.murat.tradewave.Service;
 
 import com.murat.tradewave.dto.product.request.ProductRequest;
 import com.murat.tradewave.dto.product.response.ProductResponse;
+import com.murat.tradewave.exception.CategoryNotFoundException;
 import com.murat.tradewave.helper.Mapper;
 import com.murat.tradewave.model.Category;
 import com.murat.tradewave.model.Product;
@@ -145,5 +146,62 @@ class ProductServiceImplTest {
         productService.deleteProduct(4L);
 
         verify(productionRepository).delete(existing);
+    }
+
+    @Test
+    void createProduct_shouldThrowCategoryNotFoundExceptionWhenCategoryDoesNotExist() {
+        // Given
+        ProductRequest request = ProductRequest.builder()
+                .name("Test Product")
+                .description("Test Description")
+                .price(BigDecimal.valueOf(99.99))
+                .stock(10)
+                .categoryId(999L) // Non-existent category ID
+                .build();
+
+        when(categoryRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThatThrownBy(() -> productService.createProduct(request))
+                .isInstanceOf(CategoryNotFoundException.class)
+                .hasMessage("Category not found with id: 999");
+
+        verify(categoryRepository).findById(999L);
+        verify(productionRepository, never()).save(any(Product.class));
+    }
+
+    @Test
+    void updateProduct_shouldThrowRuntimeExceptionWhenProductDoesNotExist() {
+        // Given
+        ProductRequest request = ProductRequest.builder()
+                .name("Updated Product")
+                .description("Updated Description")
+                .price(BigDecimal.valueOf(199.99))
+                .stock(20)
+                .build();
+
+        when(productionRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThatThrownBy(() -> productService.updateProduct(999L, request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Product not found, Please be sure search true product in our system");
+
+        verify(productionRepository).findById(999L);
+        verify(productionRepository, never()).save(any(Product.class));
+    }
+
+    @Test
+    void deleteProduct_shouldThrowRuntimeExceptionWhenProductDoesNotExist() {
+        // Given
+        when(productionRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThatThrownBy(() -> productService.deleteProduct(999L))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Product not found,Please be sure search true product in our system");
+
+        verify(productionRepository).findById(999L);
+        verify(productionRepository, never()).delete(any(Product.class));
     }
 }

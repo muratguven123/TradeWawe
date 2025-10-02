@@ -2,6 +2,7 @@ package com.murat.tradewave.controller;
 
 import com.murat.tradewave.dto.product.request.ProductRequest;
 import com.murat.tradewave.dto.product.response.ProductResponse;
+import com.murat.tradewave.service.ProductServiceImpl;
 import com.murat.tradewave.service.ProductionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
-
-
-    @Qualifier("productServiceImpl")
     private final ProductionService productionService;
+    private final ProductServiceImpl productServiceimpl;
+
     @PostMapping("/create")
     public ProductResponse createProduct(@RequestBody ProductRequest productRequest) {
-        return productionService.createProduct(productRequest);
+        return productServiceimpl.createProduct(productRequest);
     }
     @GetMapping("/all")
     public Page<ProductResponse> getAllProducts(
@@ -28,7 +28,7 @@ public class ProductController {
             @RequestParam(defaultValue = "6") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String direction){
-        return productionService.getAlProducts(page, size, sort, direction);
+        return productServiceimpl.getAlProducts(page, size, sort, direction);
     }
         @GetMapping("/{id}")
         public ProductResponse getProduct(@PathVariable Long id) {
@@ -36,11 +36,11 @@ public class ProductController {
         }
         @PutMapping("/update")
         public ProductResponse updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequest productRequest) {
-        return productionService.updateProduct(id, productRequest);
+        return productServiceimpl.updateProduct(id, productRequest);
         }
         @DeleteMapping("/delete")
         public void deleteProduct(@PathVariable @Valid Long id) {
-        productionService.deleteProduct(id);
+            productServiceimpl.deleteProduct(id);
         }
 
 }

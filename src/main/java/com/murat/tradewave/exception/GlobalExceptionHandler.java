@@ -29,11 +29,33 @@ public class GlobalExceptionHandler{
         }
         errors.put("error",validationErrors);
         errors.put("errors","validation failed");
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-
-
+        return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<?> handleCategoryNotFoundException(CategoryNotFoundException ex, HttpServletRequest request) {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("timestamp", LocalDateTime.now());
+        errors.put("status", HttpStatus.NOT_FOUND.value());
+        errors.put("error", "Category Not Found");
+        errors.put("message", ex.getMessage());
+        errors.put("path", request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("timestamp", LocalDateTime.now());
+        errors.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errors.put("error", "Internal Server Error");
+        errors.put("message", ex.getMessage());
+        errors.put("path", request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(final Exception ex, final HttpServletRequest request) {
         Map<String, Object> errors = new HashMap<>();
