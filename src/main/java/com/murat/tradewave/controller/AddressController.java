@@ -30,7 +30,7 @@ public class AddressController {
         addresServiceImpl.addToAddress(address);
     }
     @PutMapping("/update")
-    public void update(@RequestBody AddressRequest address) {
+    public void update(@RequestBody AddressRequest address) {//this method will update
         addresServiceImpl.addToAddress(address);
     }
     @DeleteMapping("/delete")
