@@ -1,6 +1,7 @@
 package com.murat.tradewave.controller;
 
 import com.murat.tradewave.dto.Address.request.AddressRequest;
+import com.murat.tradewave.dto.Address.response.AdressResponse;
 import com.murat.tradewave.model.Address;
 import com.murat.tradewave.service.AddresServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AddressController {
     private final AddresServiceImpl addresServiceImpl;
+
 
     @GetMapping
     public List<Address> findAll() {
@@ -30,8 +32,8 @@ public class AddressController {
         addresServiceImpl.addToAddress(address);
     }
     @PutMapping("/update")
-    public void update(@RequestBody AddressRequest address) {//this method will update
-        addresServiceImpl.addToAddress(address);
+    public void update(@RequestBody AdressResponse address) {
+        addresServiceImpl.updateAddress(address);
     }
     @DeleteMapping("/delete")
     public void delete(@RequestBody AddressRequest address) {
