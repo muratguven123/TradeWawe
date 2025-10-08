@@ -43,4 +43,3 @@ KULLANICI
  [JWT Security]  [Exception Handler]  [Mapper]
 ```
 
-Bu diyagram, domainlerin ve ortak katmanların ilişkilerini daha görsel ve anlaşılır şekilde sunar.
