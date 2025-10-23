@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,6 +38,8 @@ public class UserImplService implements UserService {
         );
     }
 
+    @Override
+    @Transactional
     public UserResponse registerUser(UserRequest request){
         if(userRepository.findByEmail(request.getEmail()).isPresent()){
             throw new RuntimeException("User already exists");
@@ -47,23 +50,29 @@ public class UserImplService implements UserService {
                 .name(request.getName())
                 .role(Role.USER)
                 .build();
-        userRepository.save(user);
-        String token = jwtService.generateToken(user.getEmail());
+        User savedUser = userRepository.saveAndFlush(user);
+        String token = jwtService.generateToken(savedUser.getEmail());
         return UserResponse.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
+                .id(savedUser.getId())
+                .name(savedUser.getName())
+                .email(savedUser.getEmail())
                 .token(token)
                 .build();
 
     }
+
+    @Transactional(readOnly = true)
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
+
+    @Transactional
     public void deleteUserbyid(Long id){
         User deletedUser = userRepository.findById(id).orElseThrow(()->new RuntimeException("UserNotFound"));
         userRepository.delete(deletedUser);
     }
+
+    @Transactional
     public UserResponse changeRole(Long id,Role newRole){
         User changedRole = userRepository.findById(id).orElseThrow(()->new RuntimeException("user not found"));
         changedRole.setRole(newRole);

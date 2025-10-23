@@ -85,14 +85,14 @@ class ProductServiceImplTest {
     @Test
     void getAllProducts_shouldReturnMappedPage() {
         Product p1 = Product.builder().id(1L).name("A").description("a").price(BigDecimal.ONE).stock(1).build();
-        Product p2 = Product.builder().id(2L).name("B").description("b").price(BigDecimal.TWO).stock(2).build();
+        Product p2 = Product.builder().id(2L).name("B").description("b").price(BigDecimal.TEN).stock(10).build();
         List<Product> products = Arrays.asList(p1, p2);
         Page<Product> page = new PageImpl<>(products);
 
         PageRequest pageable = PageRequest.of(0, 2, Sort.by("name").ascending());
         when(productionRepository.findAll(pageable)).thenReturn(page);
         when(mapper.mapToResponse(p1)).thenReturn(ProductResponse.builder().id(1L).name("A").description("a").price(BigDecimal.ONE).stock(1).build());
-        when(mapper.mapToResponse(p2)).thenReturn(ProductResponse.builder().id(2L).name("B").description("b").price(BigDecimal.TWO).stock(2).build());
+        when(mapper.mapToResponse(p2)).thenReturn(ProductResponse.builder().id(2L).name("B").description("b").price(BigDecimal.TEN).stock(10).build());
 
         Page<ProductResponse> result = productService.getAlProducts(0, 2, "name", "asc");
 

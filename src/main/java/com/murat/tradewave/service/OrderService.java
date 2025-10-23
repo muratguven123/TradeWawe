@@ -38,7 +38,7 @@ public class OrderService {
         BigDecimal totalPrice = BigDecimal.ZERO;
 
 
-            Product product = productionRepository.findById(orderRequest.getProductıd()).orElseThrow(() -> new RuntimeException("Product not found"));
+            Product product = productionRepository.findById(orderRequest.getProductId()).orElseThrow(() -> new RuntimeException("Product not found"));
 
             BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(orderRequest.getQuantity()));
             totalPrice = totalPrice.add(itemTotal);
@@ -64,23 +64,13 @@ public class OrderService {
         }
         order.setItems(orderItems);
         Order savedOrder = orderRepository.save(order);
-        List<OrderItemResponse> itemResponses = new ArrayList<>();
-        for (OrderItem item : savedOrder.getItems()) {
-            itemResponses.add(OrderItemResponse.builder()
-                    .productİd(item.getProduct().getId())
-                    .productName(item.getProduct().getName())
-                    .price(item.getPrice())
-                    .quantity(item.getQuantity())
-                    .build());
-        }
-
 
         return OrderRequest.builder()
-                .orderId(order.getId())
-                .status(order.getStatus())
-                .totalAmount(order.getTotalAmount())
-                .items(order.getItems())
-                .createdAt(order.getCreatedAt())
+                .orderId(savedOrder.getId())
+                .status(savedOrder.getStatus())
+                .totalAmount(savedOrder.getTotalAmount())
+                .items(savedOrder.getItems())
+                .createdAt(savedOrder.getCreatedAt())
                 .build();
     }
 

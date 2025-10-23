@@ -27,8 +27,8 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryRequest> getCategoryByid(@RequestParam Long id) {
-        return ResponseEntity.ok((CategoryRequest) categoryService.getCategoryById(id));
+    public ResponseEntity<CategoryResponse> getCategoryByid(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
     @PutMapping("/{id}")
@@ -36,7 +36,7 @@ public class CategoryController {
             @PathVariable Long id,
             @RequestBody CategoryRequest request) {
 
-        return ResponseEntity.ok(categoryService.updateCategory(request));
+        return ResponseEntity.ok(categoryService.updateCategory(id, request));
 
     }
 }

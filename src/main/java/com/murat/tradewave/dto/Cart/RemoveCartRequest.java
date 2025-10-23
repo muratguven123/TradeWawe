@@ -1,13 +1,15 @@
 package com.murat.tradewave.dto.Cart;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Data
-@RequiredArgsConstructor
-@Setter@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RemoveCartRequest {
-    private Long userid;
-    private Long productid;
+    @NotNull(message = "User ID is required")
+    private Long userId;
+
+    @NotNull(message = "Product ID is required")
+    private Long productId;
 }

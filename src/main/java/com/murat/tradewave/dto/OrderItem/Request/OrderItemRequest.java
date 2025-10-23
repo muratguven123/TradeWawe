@@ -8,10 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class OrderItemRequest {
-private Long productıd;
+private Long productId;
 private String name;
 private Integer quantity;
-
-
 
 }

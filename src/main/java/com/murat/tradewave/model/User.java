@@ -18,8 +18,8 @@ public class User {
     @Setter
     @Getter
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Setter
     @Getter
     @Column(nullable = false)

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Cart")
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter

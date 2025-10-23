@@ -4,7 +4,6 @@ import com.murat.tradewave.dto.user.request.UserLogRequest;
 import com.murat.tradewave.dto.user.request.UserRequest;
 import com.murat.tradewave.dto.user.response.UserResponse;
 import com.murat.tradewave.service.UserImplService;
-import com.murat.tradewave.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

@@ -48,11 +48,17 @@ public class SellerServiceImpl implements SellerService {
     }
     @Override
     public org.springframework.security.core.userdetails.User login(SellerLoginRequest sellerRequest) {
-        com.murat.tradewave.model.User user = sellerRepository.findByEmail(sellerRequest.getEmail());
+        Seller seller = sellerRepository.findByEmail(sellerRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Seller not found"));
+
+        if (!bCryptPasswordEncoder.matches(sellerRequest.getPassword(), seller.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
         return new org.springframework.security.core.userdetails.User(
-                sellerRequest.getEmail(),
-                sellerRequest.getPassword(),
-                List.of(new SimpleGrantedAuthority(user.getRole().toString()))
+                seller.getEmail(),
+                seller.getPassword(),
+                List.of(new SimpleGrantedAuthority(seller.getAccountType().toString()))
         );
 
     }

@@ -10,14 +10,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class OrderItemResponse {
-    private Long productİd;
+    private Long productId;
 
     private String productName;
 
     private Integer quantity;
 
     private BigDecimal price;
-
-
-
 }

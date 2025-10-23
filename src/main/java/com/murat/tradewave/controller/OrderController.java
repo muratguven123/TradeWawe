@@ -5,8 +5,8 @@ import com.murat.tradewave.dto.Order.response.OrderResponse;
 import com.murat.tradewave.dto.OrderItem.Request.OrderItemRequest;
 import com.murat.tradewave.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +21,13 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderDetail(@PathVariable Long id, Authentication authentication) throws AccessDeniedException {
-        String email = authentication.name();
+        String email = authentication.getName();
         OrderResponse response = orderService.getOrderDetail(id, email);
         return ResponseEntity.ok(response);
     }
     @PostMapping("/create")
-    public ResponseEntity<OrderRequest> createOrder(@RequestBody OrderItemRequest request,
-                                                     @AuthenticationPrincipal(expression = "username") String email) {
+    public ResponseEntity<OrderRequest> createOrder(@RequestBody OrderItemRequest request, Authentication authentication) {
+        String email = authentication.getName();
         OrderRequest orderRequest = orderService.createOrder(request, email);
         return ResponseEntity.ok(orderRequest);
     }

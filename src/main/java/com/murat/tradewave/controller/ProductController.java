@@ -34,12 +34,12 @@ public class ProductController {
         public ProductResponse getProduct(@PathVariable Long id) {
         return productionService.getProduct(id);
         }
-        @PutMapping("/update")
+        @PutMapping("/update/{id}")
         public ProductResponse updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequest productRequest) {
         return productServiceimpl.updateProduct(id, productRequest);
         }
-        @DeleteMapping("/delete")
-        public void deleteProduct(@PathVariable @Valid Long id) {
+        @DeleteMapping("/delete/{id}")
+        public void deleteProduct(@PathVariable Long id) {
             productServiceimpl.deleteProduct(id);
         }
 

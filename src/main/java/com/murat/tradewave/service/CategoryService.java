@@ -6,21 +6,26 @@ import com.murat.tradewave.model.Category;
 import com.murat.tradewave.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import com.murat.tradewave.helper.Mapper;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final Mapper mapper;
 
-    public List<CategoryRequest> getCategoryById(@PathVariable Long id) {
-        return (List<CategoryRequest>) categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+    public CategoryResponse getCategoryById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        return CategoryResponse.builder()
+                .categoryId(category.getId())
+                .categoryName(category.getName())
+                .build();
     }
 
     public List<CategoryResponse> getAllCategories() {
@@ -43,12 +48,11 @@ public class CategoryService {
                 .categoryId(savedCategory.getId())
                 .categoryName(savedCategory.getName())
                 .build();
-
     }
 
-    public CategoryResponse updateCategory(CategoryRequest request) {
-        Category category = categoryRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + request.getId()));
+    public CategoryResponse updateCategory(Long id, CategoryRequest request) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
 
         category.setName(request.getName());
 

@@ -14,26 +14,29 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/cart")
 @RequiredArgsConstructor
 public class CartController {
-    private final CartServiceImpl cartServiceImpl;
+    private final CartService cartService;
+
     @PostMapping("/add")
     public ResponseEntity<Void> addToCart(@RequestBody AddToCartRequest request) {
-        cartServiceImpl.addToCart(request);
+        cartService.addToCart(request);
         return ResponseEntity.ok().build();
     }
+
     @DeleteMapping("/remove")
-    public ResponseEntity<Void> removeFromCart(@RequestParam RemoveCartRequest removeCartRequest) {
-        cartServiceImpl.removeFromCart(removeCartRequest);
+    public ResponseEntity<Void> removeFromCart(@RequestBody RemoveCartRequest removeCartRequest) {
+        cartService.removeFromCart(removeCartRequest);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/view")
     public ResponseEntity<Cart> viewCart(@RequestParam Long userId) {
-        Cart cart = cartServiceImpl.viewCart(userId);
+        Cart cart = cartService.viewCart(userId);
         return ResponseEntity.ok(cart);
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<Order> checkoutCart(@RequestParam Long orderid) {
-        Order order = cartServiceImpl.checkoutCart(orderid);
+    public ResponseEntity<Order> checkoutCart(@RequestParam Long userId) {
+        Order order = cartService.checkoutCart(userId);
         return ResponseEntity.ok(order);
     }
 
