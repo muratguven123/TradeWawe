@@ -7,8 +7,10 @@ import com.murat.tradewave.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,12 +20,11 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> getOrderDetail(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<OrderResponse> getOrderDetail(@PathVariable Long id, Authentication authentication) throws AccessDeniedException {
         String email = authentication.getName();
         OrderResponse response = orderService.getOrderDetail(id, email);
         return ResponseEntity.ok(response);
     }
-
     @PostMapping("/create")
     public ResponseEntity<OrderRequest> createOrder(@RequestBody OrderItemRequest request, Authentication authentication) {
         String email = authentication.getName();

@@ -1,4 +1,4 @@
-package com.murat.tradewave.Controller;
+package com.murat.tradewave.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.murat.tradewave.controller.SellerController;

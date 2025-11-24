@@ -63,7 +63,7 @@ class OrderControllerTest {
     @Test
     void createOrder_shouldReturnOk() throws Exception {
         OrderItemRequest request = OrderItemRequest.builder()
-                .productId(1L)
+                .productıd(1L)
                 .name("Test Product")
                 .quantity(2)
                 .build();

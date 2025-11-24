@@ -1,5 +1,4 @@
 package com.murat.tradewave.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -22,12 +21,9 @@ public class Address {
     private String postalCode;
     private String country;
     private boolean isDefault;
-    
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

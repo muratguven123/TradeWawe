@@ -1,47 +1,41 @@
 package com.murat.tradewave.service;
-
 import com.murat.tradewave.Enums.OrderStatus;
 import com.murat.tradewave.Enums.PaymentStatus;
 import com.murat.tradewave.dto.payment.request.PaymentRequest;
 import com.murat.tradewave.dto.payment.response.PaymentResponse;
-import com.murat.tradewave.exception.OrderAlreadyPaidException;
-import com.murat.tradewave.exception.OrderNotFoundException;
 import com.murat.tradewave.model.Order;
 import com.murat.tradewave.model.Payment;
 import com.murat.tradewave.repository.OrderRepository;
 import com.murat.tradewave.repository.PaymentRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.Random;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
-    private final Random random = new Random();
-
+    private  Random random;
     @Transactional
     public PaymentResponse initailPayment(PaymentRequest paymentRequest) {
-        Order order = orderRepository.findById(paymentRequest.getOrderId())
-                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
-
-        if (order.getStatus() != OrderStatus.Created) {
-            throw new OrderAlreadyPaidException("Order already exists");
+        Order order = orderRepository.findById(paymentRequest.getOrderId()).orElseThrow(()->new RuntimeException("Order not found"));
+        if (order.getStatus()== OrderStatus.Created){
+            throw new RuntimeException("Order already exists");
         }
+        boolean paymentSuccess = random.nextDouble()<0.7;
 
-        boolean paymentSuccess = random.nextDouble() < 0.7;
-
-        PaymentStatus paymentStatus = paymentSuccess ? PaymentStatus.Success : PaymentStatus.Failed;
-        // Using Pending instead of Paid due to database constraint limitation
-        OrderStatus orderStatus = paymentSuccess ? OrderStatus.Pending : OrderStatus.Cancelled;
+        PaymentStatus paymentStatus = paymentSuccess? PaymentStatus.Success: PaymentStatus.Failed;
+        OrderStatus orderStatus= paymentSuccess ? OrderStatus.Created:OrderStatus.Cancelled;
         order.setStatus(orderStatus);
 
-        Payment payment = Payment.builder()
+        Payment payment=Payment.builder()
                 .order(order)
                 .amount(order.getTotalAmount())
                 .status(paymentStatus)
@@ -49,8 +43,8 @@ public class PaymentService {
                 .build();
 
         paymentRepository.save(payment);
-        orderRepository.save(order);
 
+        orderRepository.save(order);
         return PaymentResponse.builder()
                 .paymentId(payment.getId())
                 .status(payment.getStatus().name())
@@ -59,8 +53,7 @@ public class PaymentService {
                 .paidAt(payment.getPaidAt())
                 .build();
     }
-
-    public List<PaymentResponse> paymentGetHistory(String email) {
+    public List<PaymentResponse> paymentGetHistory(String email){
         List<Payment> payments = paymentRepository.findAllByUserEmail(email);
 
         return payments.stream()
@@ -73,4 +66,20 @@ public class PaymentService {
                         .build())
                 .toList();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

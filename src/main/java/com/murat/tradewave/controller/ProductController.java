@@ -22,7 +22,6 @@ public class ProductController {
     public ProductResponse createProduct(@RequestBody ProductRequest productRequest) {
         return productServiceimpl.createProduct(productRequest);
     }
-
     @GetMapping("/all")
     public Page<ProductResponse> getAllProducts(
             @RequestParam(defaultValue = "0") int page,

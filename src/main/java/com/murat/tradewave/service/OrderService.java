@@ -5,8 +5,6 @@ import com.murat.tradewave.dto.Order.response.OrderResponse;
 import com.murat.tradewave.dto.OrderItem.Request.OrderItemRequest;
 import com.murat.tradewave.dto.OrderItem.Response.OrderItemResponse;
 import com.murat.tradewave.Enums.OrderStatus;
-import com.murat.tradewave.exception.AccessDeniedException;
-import com.murat.tradewave.exception.OrderNotFoundException;
 import com.murat.tradewave.model.Order;
 import com.murat.tradewave.model.OrderItem;
 import com.murat.tradewave.model.Product;
@@ -16,9 +14,9 @@ import com.murat.tradewave.repository.ProductionRepository;
 import com.murat.tradewave.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,31 +65,24 @@ public class OrderService {
         order.setItems(orderItems);
         Order savedOrder = orderRepository.save(order);
 
-        List<OrderItemResponse> itemResponses = savedOrder.getItems().stream()
-                .map(item -> OrderItemResponse.builder()
-                        .productId(item.getProduct().getId())
-                        .productName(item.getProduct().getName())
-                        .quantity(item.getQuantity())
-                        .price(item.getProduct().getPrice())
-                        .build())
-                .toList();
-
         return OrderRequest.builder()
                 .orderId(savedOrder.getId())
                 .status(savedOrder.getStatus())
                 .totalAmount(savedOrder.getTotalAmount())
-                .items(itemResponses)
+                .items(savedOrder.getItems())
                 .createdAt(savedOrder.getCreatedAt())
                 .build();
     }
-@Transactional(readOnly = true)
-    public OrderResponse getOrderDetail(Long orderId, String email) {
+
+    public OrderResponse getOrderDetail(Long orderId, String email) throws AccessDeniedException {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
-        
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!order.getUser().getEmail().equals(email)) {
+            throw new AccessDeniedException("You are not allowed to view this order.");
+        }
         List<OrderItemResponse> items = order.getItems().stream()
                 .map(item -> OrderItemResponse.builder()
-                        .productId(item.getProduct().getId())
                         .productName(item.getProduct().getName())
                         .quantity(item.getQuantity())
                         .price(item.getProduct().getPrice())

@@ -1,7 +1,5 @@
 package com.murat.tradewave.model;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.murat.tradewave.Enums.OrderStatus;
 import com.murat.tradewave.Enums.Role;
 import jakarta.persistence.*;
@@ -33,12 +31,10 @@ public class Seller {
     private Instant updatedAt;
     private Instant approvedAt;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Store> stores = new ArrayList<>();
 
-    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "bank_account_id")
     private BankAccount bankAccount;

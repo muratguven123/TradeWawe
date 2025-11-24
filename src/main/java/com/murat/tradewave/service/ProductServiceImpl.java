@@ -3,7 +3,6 @@ package com.murat.tradewave.service;
 import com.murat.tradewave.dto.product.request.ProductRequest;
 import com.murat.tradewave.dto.product.response.ProductResponse;
 import com.murat.tradewave.exception.CategoryNotFoundException;
-import com.murat.tradewave.model.CartItem;
 import com.murat.tradewave.model.Category;
 import com.murat.tradewave.model.Product;
 import com.murat.tradewave.repository.CategoryRepository;
@@ -32,6 +31,7 @@ public class ProductServiceImpl implements ProductionService{
     public ProductResponse createProduct(ProductRequest productRequest) {
         Category category = categoryRepository.findById(productRequest.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException(productRequest.getCategoryId()));
+
         Product product = Product.builder()
                 .name(productRequest.getName())
                 .description(productRequest.getDescription())
@@ -56,9 +56,6 @@ public class ProductServiceImpl implements ProductionService{
     public ProductResponse getProduct(Long productId) {
         Product product = productionRepository.findById(productId).orElseThrow(()-> new RuntimeException("Product not found"));
         return mapper.mapToResponse(product);
-    }
-    public ProductResponse getProductV2(ProductResponse productResponse) {
-        return productResponse;
     }
 
     @Override

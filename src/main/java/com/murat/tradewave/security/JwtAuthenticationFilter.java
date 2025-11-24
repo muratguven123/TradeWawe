@@ -31,40 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Qualifier("userDetailsServiceImpl")
     private final UserDetailsService userDetailsService;
 
-    private static final String[] PUBLIC_PATHS = {
-            "/api/auth",
-            "/swagger-ui",
-            "/v3/api-docs",
-            "/error",
-            "/address",
-            "/cart",
-            "/category",
-            "/products",
-            "/sellers",
-            "/user/login",
-            "/user/register",
-            "/seller"
-    };
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getRequestURI();
-
-        // Skip OPTIONS requests (CORS preflight)
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            return true;
-        }
-
-        // Skip public endpoints
-        for (String publicPath : PUBLIC_PATHS) {
-            if (path.startsWith(publicPath)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

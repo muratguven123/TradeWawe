@@ -1,6 +1,5 @@
 package com.murat.tradewave.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +9,7 @@ import java.math.BigDecimal;
 @Table(name="order_items")
 @Getter
 @Setter
-@NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
 public class OrderItem {
@@ -18,19 +17,13 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne
     private Product product;
 
-    @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false)
     private BigDecimal price;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @ManyToOne
     private Order order;
 }
