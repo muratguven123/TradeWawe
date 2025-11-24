@@ -97,6 +97,7 @@
                         <scope>test</scope>
                 </dependency>
 
+
 	</dependencies>
 	<build>
 		<plugins>
@@ -104,8 +105,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<source>21</source>
+					<target>21</target>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
@@ -113,9 +114,23 @@
 							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
-				</configuration>
+                    <compilerArgs>--enable-preview</compilerArgs>
+                </configuration>
 			</plugin>
-			<plugin>
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>0.10.3</version>
+
+                <configuration>
+                    <metadataRepository>
+                        <url>https://repo.maven.apache.org/maven2/</url>
+                    </metadataRepository>
+                    <outputDirectory>C:/graalvm-metadata</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>

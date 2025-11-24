@@ -1,12 +1,16 @@
 package com.murat.tradewave.helper;
 
 import com.murat.tradewave.dto.Address.response.AdressResponse;
+import com.murat.tradewave.dto.Cartİtem.ViewCartItems;
 import com.murat.tradewave.dto.Seller.SellerRequest;
 import com.murat.tradewave.dto.category.response.CategoryResponse;
 import com.murat.tradewave.dto.product.response.ProductResponse;
 import com.murat.tradewave.dto.user.response.UserResponse;
 import com.murat.tradewave.model.*;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class Mapper {
@@ -19,6 +23,15 @@ public class Mapper {
                 .stock(product.getStock())
                 .build();
     }
+        public  Product MapToEntityForProduct(ProductResponse productResponse) {
+            return Product.builder()
+                    .id(productResponse.getId())
+                    .name(productResponse.getName())
+                    .description(productResponse.getDescription())
+                    .price(productResponse.getPrice())
+                    .stock(productResponse.getStock())
+                    .build();
+        }
     public CategoryResponse mapToResponse(Category category) {
         return CategoryResponse.builder()
                 .categoryId(category.getId())
@@ -61,5 +74,6 @@ public SellerRequest mapToSellerResponse(Seller seller){
                 .sellerEmail(seller.getEmail())
                 .build();
 }
+
 
 }

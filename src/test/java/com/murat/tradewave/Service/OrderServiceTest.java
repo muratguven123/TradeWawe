@@ -1,9 +1,11 @@
 package com.murat.tradewave.Service;
+
 import com.murat.tradewave.Enums.OrderStatus;
 import com.murat.tradewave.dto.Order.request.OrderRequest;
 import com.murat.tradewave.dto.Order.response.OrderResponse;
 import com.murat.tradewave.dto.OrderItem.Request.OrderItemRequest;
 import com.murat.tradewave.dto.OrderItem.Response.OrderItemResponse;
+import com.murat.tradewave.exception.OrderNotFoundException;
 import com.murat.tradewave.model.Order;
 import com.murat.tradewave.model.OrderItem;
 import com.murat.tradewave.model.Product;
@@ -42,12 +44,12 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Test
-    void createOrder_shouldBuildAndSaveOrder() {
+    void createOrder_shouldBuildAndSaveOrder_andReturnOrderRequestDto() {
         String email = "user@example.com";
         User user = User.builder().id(1L).email(email).build();
         Product product = Product.builder().id(1L).name("Prod").price(BigDecimal.TEN).build();
         OrderItemRequest itemRequest = OrderItemRequest.builder()
-                .productıd(1L)
+                .productId(1L)
                 .quantity(2)
                 .build();
 
@@ -64,9 +66,12 @@ class OrderServiceTest {
         assertEquals(5L, result.getOrderId());
         assertEquals(OrderStatus.Created, result.getStatus());
         assertEquals(BigDecimal.valueOf(20), result.getTotalAmount());
+        assertNotNull(result.getCreatedAt());
+
         assertEquals(1, result.getItems().size());
-        OrderItem savedItem = result.getItems().get(0);
-        assertEquals(product, savedItem.getProduct());
+        OrderItemResponse savedItem = result.getItems().get(0);
+        assertEquals(1L, savedItem.getProductId());
+        assertEquals("Prod", savedItem.getProductName());
         assertEquals(2, savedItem.getQuantity());
         assertEquals(product.getPrice(), savedItem.getPrice());
 
@@ -102,8 +107,11 @@ class OrderServiceTest {
         assertEquals(10L, response.getOrderId());
         assertEquals("Created", response.getStatus());
         assertEquals(BigDecimal.valueOf(20), response.getTotalAmount());
+        assertNotNull(response.getCreatedAt());
+
         assertEquals(1, response.getItems().size());
         OrderItemResponse respItem = response.getItems().get(0);
+        assertEquals(1L, respItem.getProductId());
         assertEquals("Prod", respItem.getProductName());
         assertEquals(2, respItem.getQuantity());
         assertEquals(product.getPrice(), respItem.getPrice());
@@ -130,5 +138,14 @@ class OrderServiceTest {
 
         verify(orderRepository).findById(10L);
     }
-}
 
+    @Test
+    void getOrderDetail_shouldThrowOrderNotFound_whenOrderMissing() {
+        when(orderRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(OrderNotFoundException.class,
+                () -> orderService.getOrderDetail(99L, "user@example.com"));
+
+        verify(orderRepository).findById(99L);
+    }
+}

@@ -9,7 +9,6 @@ import com.murat.tradewave.repository.UserRepository;
 import com.murat.tradewave.security.JwtService;
 import com.murat.tradewave.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +24,23 @@ public class UserImplService implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public org.springframework.security.core.userdetails.User login(UserLogRequest userLogRequest) {
-        User user = userRepository.findByEmail(userLogRequest.getEmail()).orElseThrow(() -> new RuntimeException("User does not exist"));
-        String requestedPassword = userLogRequest.getPassword();
-        if (!passwordEncoder.matches(requestedPassword, user.getPassword())) {
+    @Transactional(readOnly = true)
+    public UserResponse login(UserLogRequest userLogRequest) {
+        User user = userRepository.findByEmail(userLogRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User does not exist"));
+
+        if (!passwordEncoder.matches(userLogRequest.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
-        return new org.springframework.security.core.userdetails.User(
-                userLogRequest.getEmail(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority(user.getRole().toString()))
-        );
+
+        String token = jwtService.generateToken(user.getEmail());
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .token(token)
+                .build();
     }
 
     @Override
@@ -60,24 +65,4 @@ public class UserImplService implements UserService {
                 .build();
 
     }
-
-    @Transactional(readOnly = true)
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
-    }
-
-    @Transactional
-    public void deleteUserbyid(Long id){
-        User deletedUser = userRepository.findById(id).orElseThrow(()->new RuntimeException("UserNotFound"));
-        userRepository.delete(deletedUser);
-    }
-
-    @Transactional
-    public UserResponse changeRole(Long id,Role newRole){
-        User changedRole = userRepository.findById(id).orElseThrow(()->new RuntimeException("user not found"));
-        changedRole.setRole(newRole);
-        userRepository.save(changedRole);
-        return mapper.mapToUserResponse(changedRole);
-    }
-
 }

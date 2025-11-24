@@ -1,5 +1,6 @@
 package com.murat.tradewave.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,9 +18,12 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;
 

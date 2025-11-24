@@ -1,10 +1,13 @@
 package com.murat.tradewave.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="products")
@@ -28,11 +31,18 @@ public class Product {
 
     private Integer stock;
 
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name="seller")
+    @JsonIgnore
+    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<CartItem> cartItems = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="seller_id")
     private User seller;
 }

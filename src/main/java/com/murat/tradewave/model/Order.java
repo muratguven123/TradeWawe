@@ -1,5 +1,6 @@
 package com.murat.tradewave.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.murat.tradewave.Enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +20,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 
     @Enumerated(EnumType.STRING)
@@ -29,9 +32,12 @@ public class Order {
 
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonIgnore
     @ManyToOne
     private Address deliveryAddress;
 
