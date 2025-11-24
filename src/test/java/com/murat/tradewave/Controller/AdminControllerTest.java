@@ -3,13 +3,12 @@ package com.murat.tradewave.Controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.murat.tradewave.Enums.Role;
 import com.murat.tradewave.controller.AdminController;
+import com.murat.tradewave.dto.user.response.UserResponse;
 import com.murat.tradewave.model.User;
 import com.murat.tradewave.security.JwtAuthenticationFilter;
-import com.murat.tradewave.service.ProductServiceImpl;
-import com.murat.tradewave.service.UserImplService;
+import com.murat.tradewave.service.AdminService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -20,6 +19,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,7 +28,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.config.Customizer.withDefaults;
-import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -36,13 +35,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(AdminControllerTest.SecurityTestConfig.class)
 class AdminControllerTest {
 
-    @Autowired MockMvc mockMvc;
+    @Autowired
+    MockMvc mockMvc;
 
-    @MockBean UserImplService userService;
-    @MockBean ProductServiceImpl productService;
-    @MockBean JwtAuthenticationFilter jwtAuthenticationFilter;
+    @MockBean
+    AdminService adminService;
 
-    @Autowired ObjectMapper objectMapper;
+    @MockBean
+    JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @TestConfiguration
     @EnableMethodSecurity
@@ -73,7 +76,7 @@ class AdminControllerTest {
     void getAllUsers_asNonAdmin_forbidden() throws Exception {
         mockMvc.perform(get("/admin/users"))
                 .andExpect(status().isForbidden());
-        Mockito.verifyNoInteractions(userService, productService);
+        verifyNoInteractions(adminService);
     }
 
     @Test
@@ -82,7 +85,7 @@ class AdminControllerTest {
     void getAllUsers_asAdmin_ok() throws Exception {
         var u1 = User.builder().id(1L).email("a@example.com").name("A").build();
         var u2 = User.builder().id(2L).email("b@example.com").name("B").build();
-        when(userService.getAllUsers()).thenReturn(List.of(u1, u2));
+        when(adminService.getAllUsers()).thenReturn(List.of(u1, u2));
 
         mockMvc.perform(get("/admin/users").accept("application/json"))
                 .andExpect(status().isOk())
@@ -94,20 +97,20 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$[1].email").value("b@example.com"))
                 .andExpect(jsonPath("$[1].name").value("B"));
 
-        verify(userService).getAllUsers();
+        verify(adminService).getAllUsers();
     }
 
     @Test
-    @DisplayName("DELETE /admin/users/{id} - ADMIN -> 200")
+    @DisplayName("DELETE /admin/users/{id} - ADMIN -> 204")
     @WithMockUser(roles = "ADMIN")
     void deleteUser_asAdmin_ok() throws Exception {
         long id = 1L;
-        doNothing().when(userService).deleteUserbyid(id);
+        doNothing().when(adminService).deleteUser(id);
 
         mockMvc.perform(delete("/admin/users/{id}", id))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
-        verify(userService).deleteUserbyid(id);
+        verify(adminService).deleteUser(id);
     }
 
     @Test
@@ -117,7 +120,7 @@ class AdminControllerTest {
         mockMvc.perform(delete("/admin/users/{id}", 99L))
                 .andExpect(status().isForbidden());
 
-        Mockito.verifyNoInteractions(userService, productService);
+        verifyNoInteractions(adminService);
     }
 
     @Test
@@ -126,13 +129,22 @@ class AdminControllerTest {
     void changeUserRole_asAdmin_ok() throws Exception {
         long id = 10L;
         Role newRole = Role.ADMIN;
-        doReturn(null).when(userService).changeRole(id, newRole);
+        UserResponse userResponse = UserResponse.builder()
+                .id(id)
+                .email("admin@example.com")
+                .name("Admin User")
+                .build();
+
+        when(adminService.changeUserRole(id, newRole)).thenReturn(userResponse);
 
         mockMvc.perform(put("/admin/users/{id}/role", id)
                         .param("newRole", newRole.name()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10))
+                .andExpect(jsonPath("$.email").value("admin@example.com"))
+                .andExpect(jsonPath("$.name").value("Admin User"));
 
-        verify(userService).changeRole(eq(id), eq(newRole));
+        verify(adminService).changeUserRole(eq(id), eq(newRole));
     }
 
     @Test
@@ -143,20 +155,20 @@ class AdminControllerTest {
                         .param("newRole", Role.ADMIN.name()))
                 .andExpect(status().isForbidden());
 
-        Mockito.verifyNoInteractions(userService, productService);
+        verifyNoInteractions(adminService);
     }
 
     @Test
-    @DisplayName("DELETE /admin/products/{id} - ADMIN -> 200")
+    @DisplayName("DELETE /admin/products/{id} - ADMIN -> 204")
     @WithMockUser(roles = "ADMIN")
     void deleteAnyProduct_asAdmin_ok() throws Exception {
         long id = 5L;
-        doNothing().when(productService).deleteProduct(id);
+        doNothing().when(adminService).deleteProduct(id);
 
         mockMvc.perform(delete("/admin/products/{id}", id))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
-        verify(productService).deleteProduct(id);
+        verify(adminService).deleteProduct(id);
     }
 
     @Test
@@ -166,6 +178,73 @@ class AdminControllerTest {
         mockMvc.perform(delete("/admin/products/{id}", 11L))
                 .andExpect(status().isForbidden());
 
-        Mockito.verifyNoInteractions(userService, productService);
+        verifyNoInteractions(adminService);
+    }
+
+    @Test
+    @DisplayName("GET /admin/users/{id} - ADMIN -> 200")
+    @WithMockUser(roles = "ADMIN")
+    void getUserById_asAdmin_ok() throws Exception {
+        long id = 1L;
+        User user = User.builder()
+                .id(id)
+                .email("test@example.com")
+                .name("Test User")
+                .role(Role.USER)
+                .build();
+
+        when(adminService.getUserById(id)).thenReturn(user);
+
+        mockMvc.perform(get("/admin/users/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.email").value("test@example.com"))
+                .andExpect(jsonPath("$.name").value("Test User"));
+
+        verify(adminService).getUserById(id);
+    }
+
+    @Test
+    @DisplayName("GET /admin/users/{id} - USER -> 403")
+    @WithMockUser(roles = "USER")
+    void getUserById_asNonAdmin_forbidden() throws Exception {
+        mockMvc.perform(get("/admin/users/{id}", 1L))
+                .andExpect(status().isForbidden());
+
+        verifyNoInteractions(adminService);
+    }
+
+    @Test
+    @DisplayName("PATCH /admin/users/{id}/status - ADMIN -> 200")
+    @WithMockUser(roles = "ADMIN")
+    void toggleUserStatus_asAdmin_ok() throws Exception {
+        long id = 1L;
+        UserResponse userResponse = UserResponse.builder()
+                .id(id)
+                .email("test@example.com")
+                .name("Test User")
+                .build();
+
+        when(adminService.toggleUserStatus(id, false)).thenReturn(userResponse);
+
+        mockMvc.perform(patch("/admin/users/{id}/status", id)
+                        .param("active", "false"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.email").value("test@example.com"));
+
+        verify(adminService).toggleUserStatus(eq(id), eq(false));
+    }
+
+    @Test
+    @DisplayName("PATCH /admin/users/{id}/status - USER -> 403")
+    @WithMockUser(roles = "USER")
+    void toggleUserStatus_asNonAdmin_forbidden() throws Exception {
+        mockMvc.perform(patch("/admin/users/{id}/status", 1L)
+                        .param("active", "false"))
+                .andExpect(status().isForbidden());
+
+        verifyNoInteractions(adminService);
     }
 }
+

@@ -1,5 +1,6 @@
 package com.murat.tradewave.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.murat.tradewave.Enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,6 +39,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
 

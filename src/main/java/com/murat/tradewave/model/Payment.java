@@ -1,5 +1,6 @@
 package com.murat.tradewave.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.murat.tradewave.Enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +27,9 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
+    @JsonIgnore
     @ManyToOne
     private Order order;
+
+
 }

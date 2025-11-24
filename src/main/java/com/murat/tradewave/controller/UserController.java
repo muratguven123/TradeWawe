@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +40,7 @@ private final UserImplService userService;
     @ApiResponse(responseCode = "200", description = "Başarılı giriş"),
     @ApiResponse(responseCode = "401", description = "Geçersiz kullanıcı bilgileri")
 })
-    public User login(@RequestBody @Valid UserLogRequest userLogRequest) {
+    public UserResponse login(@RequestBody @Valid UserLogRequest userLogRequest) {
         return userService.login(userLogRequest);
 }
 

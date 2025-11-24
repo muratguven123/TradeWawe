@@ -72,7 +72,7 @@ class CategoryServiceTest {
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(categoryRepository.save(existing)).thenReturn(Category.builder().id(1L).name("Updated").build());
 
-        CategoryResponse response = categoryService.updateCategory(request);
+        CategoryResponse response = categoryService.updateCategory(1L, request);
 
         assertThat(response.getCategoryName()).isEqualTo("Updated");
         verify(categoryRepository).findById(1L);
